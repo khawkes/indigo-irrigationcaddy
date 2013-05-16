@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Actions>
+	<Action id="activateSystem" deviceFilter="self">
+		<Name>Activate System</Name>
+		<CallbackMethod>actionActivateSystem</CallbackMethod>
+	</Action>
+	<Action id="deactivateSystem" deviceFilter="self">
+		<Name>Deactivate System</Name>
+		<CallbackMethod>actionDeactivateSystem</CallbackMethod>
+	</Action>
+	<Action id="runProgram" deviceFilter="self">
+		<Name>Run Program</Name>
+		<CallbackMethod>actionRunProgram</CallbackMethod>
+		<ConfigUI>
+			<Field type="textfield" id="programNum">
+				<Label>Program Number:</Label>
+			</Field>
+		</ConfigUI>
+	</Action>
+</Actions>

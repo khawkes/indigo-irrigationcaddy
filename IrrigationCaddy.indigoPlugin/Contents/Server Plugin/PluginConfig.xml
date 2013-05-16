@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<PluginConfig>
+	<Field id="infoLabel" type="label">
+		<Label>Irrigation Caddy Plugin by Dan Noguerol (Whizzo Software, LLC)</Label>
+	</Field>
+    <Field id="simpleSeparator1" type="separator"/>
+	<Field id="pollingInterval" type="textfield">
+		<Label>Polling Interval (in seconds):</Label>
+	</Field>
+    <Field id="space1" type="label">
+    	<Label/>
+    </Field>
+	<Field type="checkbox" id="debugEnabled" defaultValue="false">
+		<Label>Enable debugging:</Label>
+	</Field>
+</PluginConfig>

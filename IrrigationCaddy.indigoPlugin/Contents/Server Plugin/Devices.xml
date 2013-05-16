@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Devices>
+	<!-- ========================================================================= -->
+	<Device type="custom" id="irrigationCaddy">
+		<Name>Irrigation Caddy</Name>
+		<ConfigUI>
+			<Field id="address" type="textfield">
+				<Label>Module Address:</Label>
+			</Field>
+		</ConfigUI>
+		<UiDisplayStateId>running</UiDisplayStateId>
+		<States>
+			<State id="active">
+				<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>System active</TriggerLabel>
+				<ControlPageLabel>System active</ControlPageLabel>
+			</State>
+			<State id="running">
+				<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>System currently running</TriggerLabel>
+				<ControlPageLabel>System currently running</ControlPageLabel>
+			</State>
+			<State id="zoneNumber">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Zone currently running</TriggerLabel>
+				<ControlPageLabel>Zone currently running</ControlPageLabel>
+			</State>
+			<State id="programNumber">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Program currently running</TriggerLabel>
+				<ControlPageLabel>Program currently running</ControlPageLabel>
+			</State>
+		</States>
+	</Device>
+</Devices>
