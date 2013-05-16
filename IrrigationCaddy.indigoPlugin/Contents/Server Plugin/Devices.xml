@@ -7,16 +7,25 @@
 			<Field id="address" type="textfield">
 				<Label>Module Address:</Label>
 			</Field>
+			<Field id="useAuthentication" type="checkbox" defaultValue="false">
+				<Label>Use authentication:</Label>
+			</Field>
+			<Field id="username" type="textfield">
+				<Label>Username:</Label>
+			</Field>
+			<Field id="password" type="textfield">
+				<Label>Password:</Label>
+			</Field>
 		</ConfigUI>
 		<UiDisplayStateId>running</UiDisplayStateId>
 		<States>
 			<State id="active">
-				<ValueType boolType="OnOff">Boolean</ValueType>
+				<ValueType boolType="YesNo">Boolean</ValueType>
 				<TriggerLabel>System active</TriggerLabel>
 				<ControlPageLabel>System active</ControlPageLabel>
 			</State>
 			<State id="running">
-				<ValueType boolType="OnOff">Boolean</ValueType>
+				<ValueType boolType="YesNo">Boolean</ValueType>
 				<TriggerLabel>System currently running</TriggerLabel>
 				<ControlPageLabel>System currently running</ControlPageLabel>
 			</State>
@@ -25,10 +34,35 @@
 				<TriggerLabel>Zone currently running</TriggerLabel>
 				<ControlPageLabel>Zone currently running</ControlPageLabel>
 			</State>
+			<State id="zoneSecondsLeft">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Seconds left for current zone</TriggerLabel>
+				<ControlPageLabel>Seconds left for current zone</ControlPageLabel>
+			</State>
 			<State id="programNumber">
 				<ValueType>Number</ValueType>
 				<TriggerLabel>Program currently running</TriggerLabel>
 				<ControlPageLabel>Program currently running</ControlPageLabel>
+			</State>
+			<State id="programSecondsLeft">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Seconds left for current program</TriggerLabel>
+				<ControlPageLabel>Seconds left for current program</ControlPageLabel>
+			</State>
+			<State id="raining">
+				<ValueType boolType="YesNo">Boolean</ValueType>
+				<TriggerLabel>Currently raining</TriggerLabel>
+				<ControlPageLabel>Currently raining</ControlPageLabel>
+			</State>
+			<State id="maxZones">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Maximum zones</TriggerLabel>
+				<ControlPageLabel>Maximum zones</ControlPageLabel>
+			</State>
+			<State id="rainSensor">
+				<ValueType boolType="OnOff">Boolean</ValueType>
+				<TriggerLabel>Rain sensor enabled</TriggerLabel>
+				<ControlPageLabel>Rain sensor enabled</ControlPageLabel>
 			</State>
 		</States>
 	</Device>

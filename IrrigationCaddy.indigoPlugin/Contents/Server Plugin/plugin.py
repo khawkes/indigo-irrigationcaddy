@@ -25,11 +25,20 @@ class Plugin(indigo.PluginBase):
 	def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 		indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
 
+		# set debug option
 		if 'debugEnabled' in pluginPrefs:
 			self.debug = pluginPrefs['debugEnabled']
 		else:
 			self.debug = False
+
+		# create empty device list
 		self.deviceList = []
+
+		# install authenticating opener
+		self.passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+		authhandler = urllib2.HTTPBasicAuthHandler(self.passman)
+		opener = urllib2.build_opener(authhandler)
+		urllib2.install_opener(opener)
 	
 	def __del__(self):
 		indigo.PluginBase.__del__(self)
@@ -37,8 +46,10 @@ class Plugin(indigo.PluginBase):
 	def deviceStartComm(self, device):
 		self.debugLog("Starting device: " + device.name)
 		if device.id not in self.deviceList:
-			self.update(device)
 			self.deviceList.append(device.id)
+			if device.pluginProps.has_key("useAuthentication") and device.pluginProps["useAuthentication"]:
+				self.passman.add_password(None, u"http://" + device.pluginProps["address"], device.pluginProps["username"], device.pluginProps["password"])
+			self.update(device)
 
 	def deviceStopComm(self,device):
 		self.debugLog("Stopping device: " + device.name)
@@ -61,6 +72,7 @@ class Plugin(indigo.PluginBase):
 		except self.StopThread:
 			# cleanup
 			pass
+		self.debugLog(u"Exited polling thread")
 
 	def shutdown(self):
 		self.debugLog(u"shutdown called")
@@ -68,7 +80,7 @@ class Plugin(indigo.PluginBase):
 	def update(self,device):
 		theUrl = u"http://" + device.pluginProps["address"] + "/status.json"
 		try:
-			self.debugLog("Getting status JSON")
+			self.debugLog("Requesting status JSON")
 			f = urllib2.urlopen(theUrl)
 		except urllib2.HTTPError, e:
 			self.errorLog("Error getting Irrigation Caddy (%s) status: %s" % (device.name, str(e)))
@@ -79,50 +91,47 @@ class Plugin(indigo.PluginBase):
 		except Exception, e:
 			self.errorLog("Unknown error getting Irrigation Caddy (%s) status: %s" % (device.name, str(e)))
 			return
-		self.debugLog("Got status JSON")
 		theJSON = f.read()
-		self.debugLog(theJSON)
+		self.debugLog("Received status JSON: " + theJSON)
 		statusObj = json.loads(theJSON)
 		self.updateDeviceState(device, "active", statusObj["allowRun"])
 		self.updateDeviceState(device, "running", statusObj["running"])
 		self.updateDeviceState(device, "zoneNumber", statusObj["zoneNumber"])
+		self.updateDeviceState(device, "zoneSecondsLeft", statusObj["zoneSecLeft"])
 		self.updateDeviceState(device, "programNumber", statusObj["progNumber"])
+		self.updateDeviceState(device, "programSecondsLeft", statusObj["progSecLeft"])
+		self.updateDeviceState(device, "raining", statusObj["isRaining"])
+		self.updateDeviceState(device, "maxZones", statusObj["maxZones"])
+		self.updateDeviceState(device, "rainSensor", statusObj["useSensor1"])
 
 	def updateDeviceState(self,device,state,newValue):
 		if (newValue != device.states[state]):
 			device.updateStateOnServer(key=state, value=newValue)
-		
+	
+	def postData(self,url,values):
+		data = urllib.urlencode(values)
+		req = urllib2.Request(url, data)
+		return urllib2.urlopen(req)
+	
 	# Action callbacks
 
 	def actionActivateSystem(self, action, device):
-		indigo.server.log(u"actionActivateSystem called")
-		url = u"http://" + device.pluginProps["address"] + "/runSprinklers.htm"
-		values = {'run' : 'run'}
-		data = urllib.urlencode(values)
-		req = urllib2.Request(url, data)
+		self.debugLog(u"actionActivateSystem called")
 		try:
-			response = urllib2.urlopen(req)
+			response = self.postData(u"http://" + device.pluginProps["address"] + "/runSprinklers.htm", {'run' : 'run'})
 		except Exception, e:
 			self.errorLog("Error sending \"Run Sprinklers\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
 		
 	def actionDeactivateSystem(self, action, device):
-		indigo.server.log(u"actionDeactivateSystem called")
-		url = u"http://" + device.pluginProps["address"] + "/stopSprinklers.htm"
-		values = {'stop' : 'off'}
-		data = urllib.urlencode(values)
-		req = urllib2.Request(url, data)
+		self.debugLog(u"actionDeactivateSystem called")
 		try:
-			response = urllib2.urlopen(req)
+			response = self.postData(u"http://" + device.pluginProps["address"] + "/stopSprinklers.htm", {'stop' : 'off'})
 		except Exception, e:
 			self.errorLog("Error sending \"Stop Sprinklers\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
 		
 	def actionRunProgram(self, action, device):
-		indigo.server.log(u"actionRunProgram called")
-		url = u"http://" + device.pluginProps["address"] + "/runProgram.htm"
-		values = {'pgmNum' : action.props.get(u"programNum"), 'doProgram' : '1', 'runNow' : 'true'}
-		data = urllib.urlencode(values)
-		req = urllib2.Request(url, data)
+		self.debugLog(u"actionRunProgram called")
 		try:
-			response = urllib2.urlopen(req)
+			response = self.postData(u"http://" + device.pluginProps["address"] + "/runProgram.htm", {'pgmNum' : action.props.get(u"programNum"), 'doProgram' : '1', 'runNow' : 'true'})
 		except Exception, e:
 			self.errorLog("Error sending \"Run Program\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
