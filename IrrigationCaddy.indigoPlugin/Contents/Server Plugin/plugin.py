@@ -94,15 +94,31 @@ class Plugin(indigo.PluginBase):
 		theJSON = f.read()
 		self.debugLog("Received status JSON: " + theJSON)
 		statusObj = json.loads(theJSON)
-		self.updateDeviceState(device, "active", statusObj["allowRun"])
-		self.updateDeviceState(device, "running", statusObj["running"])
+		
+		val = "off"
+		if statusObj["allowRun"]:
+			val = "on"
+		self.updateDeviceState(device, "active", val)
+		
+		val = "off"
+		if statusObj["running"]:
+			val = "on"
+		self.updateDeviceState(device, "running", val)
 		self.updateDeviceState(device, "zoneNumber", statusObj["zoneNumber"])
 		self.updateDeviceState(device, "zoneSecondsLeft", statusObj["zoneSecLeft"])
 		self.updateDeviceState(device, "programNumber", statusObj["progNumber"])
 		self.updateDeviceState(device, "programSecondsLeft", statusObj["progSecLeft"])
-		self.updateDeviceState(device, "raining", statusObj["isRaining"])
+		
+		val = "off"
+		if statusObj["isRaining"]:
+			val = "on"
+		self.updateDeviceState(device, "raining", val)
 		self.updateDeviceState(device, "maxZones", statusObj["maxZones"])
-		self.updateDeviceState(device, "rainSensor", statusObj["useSensor1"])
+		
+		val = "off"
+		if statusObj["useSensor1"]:
+			val = "on"
+		self.updateDeviceState(device, "rainSensor", val)
 
 	def updateDeviceState(self,device,state,newValue):
 		if (newValue != device.states[state]):
