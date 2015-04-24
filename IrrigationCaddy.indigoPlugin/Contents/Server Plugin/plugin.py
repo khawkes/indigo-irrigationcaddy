@@ -78,6 +78,23 @@ class Plugin(indigo.PluginBase):
 		self.debugLog(u"shutdown called")
 
 	def update(self,device):
+		theUrl = u"http://" + device.pluginProps["address"] + "/settings.json"
+		try:
+			self.debugLog("Requesting setup JSON")
+			f = urllib2.urlopen(theUrl)
+		except urllib2.HTTPError, e:
+			self.errorLog("Error getting Irrigation Caddy (%s) settings: %s" % (device.name, str(e)))
+			return
+		except urllib2.URLError, e:
+			self.errorLog("Error getting Irrigation Caddy (%s) settings (Irrigation Caddy isn't running): %s" % (device.name, str(e)))
+			return
+		except Exception, e:
+			self.errorLog("Unknown error getting Irrigation Caddy (%s) settings: %s" % (device.name, str(e)))
+			return
+		theJSON = f.read()
+		self.debugLog("Received settings JSON: " + theJSON)
+		settingsObj = json.loads(theJSON)
+				
 		theUrl = u"http://" + device.pluginProps["address"] + "/status.json"
 		try:
 			self.debugLog("Requesting status JSON")
@@ -103,11 +120,25 @@ class Plugin(indigo.PluginBase):
 		val = "off"
 		if statusObj["running"]:
 			val = "on"
+			
+		m, s = divmod(statusObj["zoneSecLeft"], 60)
+		h, m = divmod(m, 60)
+		zoneTimeLeft = "%d:%02d:%02d" % (h, m, s)
+
+		m, s = divmod(statusObj["progSecLeft"], 60)
+		h, m = divmod(m, 60)
+		programTimeLeft = "%d:%02d:%02d" % (h, m, s)
+
+		zoneNames = settingsObj["zoneNames"];
+		zone = statusObj["zoneNumber"]
 		self.updateDeviceState(device, "running", val)
-		self.updateDeviceState(device, "zoneNumber", statusObj["zoneNumber"])
+		self.updateDeviceState(device, "zoneNumber", zone)
+		self.updateDeviceState(device, "zoneName", zoneNames[zone - 1])
 		self.updateDeviceState(device, "zoneSecondsLeft", statusObj["zoneSecLeft"])
+		self.updateDeviceState(device, "zoneTimeLeft", zoneTimeLeft)
 		self.updateDeviceState(device, "programNumber", statusObj["progNumber"])
 		self.updateDeviceState(device, "programSecondsLeft", statusObj["progSecLeft"])
+		self.updateDeviceState(device, "programTimeLeft", programTimeLeft)
 		
 		val = "off"
 		if statusObj["isRaining"]:
@@ -135,6 +166,7 @@ class Plugin(indigo.PluginBase):
 		self.debugLog(u"actionActivateSystem called")
 		try:
 			response = self.postData(u"http://" + device.pluginProps["address"] + "/runSprinklers.htm", {'run' : 'run'})
+			self.update(device)
 		except Exception, e:
 			self.errorLog("Error sending \"Run Sprinklers\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
 		
@@ -142,12 +174,30 @@ class Plugin(indigo.PluginBase):
 		self.debugLog(u"actionDeactivateSystem called")
 		try:
 			response = self.postData(u"http://" + device.pluginProps["address"] + "/stopSprinklers.htm", {'stop' : 'off'})
+			self.update(device)
 		except Exception, e:
 			self.errorLog("Error sending \"Stop Sprinklers\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
+		
+	def actionNextZone(self, action, device):
+		self.debugLog(u"actionNextZone called")
+		try:
+			response = self.postData(u"http://" + device.pluginProps["address"] + "/stopSprinklers.htm", {'stop' : 'active'})
+			self.update(device)
+		except Exception, e:
+			self.errorLog("Error sending \"Stop Sprinklers\" (next zone) action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
+		
+	def actionStopProgram(self, action, device):
+		self.debugLog(u"actionStopProgram called")
+		try:
+			response = self.postData(u"http://" + device.pluginProps["address"] + "/stopProgram.htm", {'stop' : 'active'})
+			self.update(device)
+		except Exception, e:
+			self.errorLog("Error sending \"Stop Program\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))
 		
 	def actionRunProgram(self, action, device):
 		self.debugLog(u"actionRunProgram called")
 		try:
 			response = self.postData(u"http://" + device.pluginProps["address"] + "/runProgram.htm", {'pgmNum' : action.props.get(u"programNum"), 'doProgram' : '1', 'runNow' : 'true'})
+			self.update(device)
 		except Exception, e:
 			self.errorLog("Error sending \"Run Program\" action to Irrigation Caddy (%s): %s" % (device.name, str(e)))

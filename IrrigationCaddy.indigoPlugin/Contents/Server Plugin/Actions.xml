@@ -8,6 +8,14 @@
 		<Name>Deactivate System</Name>
 		<CallbackMethod>actionDeactivateSystem</CallbackMethod>
 	</Action>
+	<Action id="nextZone" deviceFilter="self">
+		<Name>Next Zone</Name>
+		<CallbackMethod>actionNextZone</CallbackMethod>
+	</Action>
+	<Action id="stopProgram" deviceFilter="self">
+		<Name>Stop Current Program</Name>
+		<CallbackMethod>actionStopProgram</CallbackMethod>
+	</Action>
 	<Action id="runProgram" deviceFilter="self">
 		<Name>Run Program</Name>
 		<CallbackMethod>actionRunProgram</CallbackMethod>

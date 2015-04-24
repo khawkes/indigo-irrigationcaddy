@@ -21,48 +21,63 @@
 		<States>
 			<State id="active">
 				<ValueType boolType="YesNo">Boolean</ValueType>
-				<TriggerLabel>System active</TriggerLabel>
-				<ControlPageLabel>System active</ControlPageLabel>
+				<TriggerLabel>System Active</TriggerLabel>
+				<ControlPageLabel>System Active</ControlPageLabel>
 			</State>
 			<State id="running">
 				<ValueType boolType="YesNo">Boolean</ValueType>
-				<TriggerLabel>System currently running</TriggerLabel>
-				<ControlPageLabel>System currently running</ControlPageLabel>
+				<TriggerLabel>System Currently Running</TriggerLabel>
+				<ControlPageLabel>System Currently Running</ControlPageLabel>
 			</State>
 			<State id="zoneNumber">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Zone currently running</TriggerLabel>
-				<ControlPageLabel>Zone currently running</ControlPageLabel>
+				<TriggerLabel>Zone Running</TriggerLabel>
+				<ControlPageLabel>Zone Running</ControlPageLabel>
+			</State>
+			<State id="zoneName">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Zone Name Running</TriggerLabel>
+				<ControlPageLabel>Zone Name Running</ControlPageLabel>
 			</State>
 			<State id="zoneSecondsLeft">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Seconds left for current zone</TriggerLabel>
-				<ControlPageLabel>Seconds left for current zone</ControlPageLabel>
+				<TriggerLabel>Seconds Left Running Zone</TriggerLabel>
+				<ControlPageLabel>Seconds Left Running Zone</ControlPageLabel>
+			</State>
+			<State id="zoneTimeLeft">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Zone Time Remaining</TriggerLabel>
+				<ControlPageLabel>Zone Time Remaining</ControlPageLabel>
 			</State>
 			<State id="programNumber">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Program currently running</TriggerLabel>
-				<ControlPageLabel>Program currently running</ControlPageLabel>
+				<TriggerLabel>Program Running</TriggerLabel>
+				<ControlPageLabel>Program Running</ControlPageLabel>
 			</State>
 			<State id="programSecondsLeft">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Seconds left for current program</TriggerLabel>
-				<ControlPageLabel>Seconds left for current program</ControlPageLabel>
+				<TriggerLabel>Seconds Left Running Program</TriggerLabel>
+				<ControlPageLabel>Seconds Left Running Program</ControlPageLabel>
+			</State>
+			<State id="programTimeLeft">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Program Time Remaining</TriggerLabel>
+				<ControlPageLabel>Program Time Remaining</ControlPageLabel>
 			</State>
 			<State id="raining">
 				<ValueType boolType="YesNo">Boolean</ValueType>
-				<TriggerLabel>Currently raining</TriggerLabel>
-				<ControlPageLabel>Currently raining</ControlPageLabel>
+				<TriggerLabel>Currently Raining</TriggerLabel>
+				<ControlPageLabel>Currently Raining</ControlPageLabel>
 			</State>
 			<State id="maxZones">
 				<ValueType>Number</ValueType>
-				<TriggerLabel>Maximum zones</TriggerLabel>
-				<ControlPageLabel>Maximum zones</ControlPageLabel>
+				<TriggerLabel>Maximum Zones</TriggerLabel>
+				<ControlPageLabel>Maximum Zones</ControlPageLabel>
 			</State>
 			<State id="rainSensor">
 				<ValueType boolType="OnOff">Boolean</ValueType>
-				<TriggerLabel>Rain sensor enabled</TriggerLabel>
-				<ControlPageLabel>Rain sensor enabled</ControlPageLabel>
+				<TriggerLabel>Rain Sensor Enabled</TriggerLabel>
+				<ControlPageLabel>Rain Sensor Enabled</ControlPageLabel>
 			</State>
 		</States>
 	</Device>
